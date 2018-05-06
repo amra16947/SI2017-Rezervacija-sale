@@ -1,0 +1,94 @@
+{{title "Korisnici"}}
+
+<div class="row">
+    <div class="col-md-6">
+        <h1>Korisnici</h1>
+    </div>
+    <div class="col-md-6 text-right title-buttons-right">
+        {{#if (eq currentUser.role "ROLE_ADMIN")}}
+            <button {{action "toggleNewUser"}} class="btn btn-primary"><span class="glyphicon glyphicon-plus-sign"></span> Dodaj novog korisnika</button>
+        {{/if}}
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-3 col-md-offset-9 text-right">
+        <div class="input-group">
+            {{input value=filterTerm class="form-control" placeholder="Trazite ..."}}
+            <div class="input-group-btn">
+                <button class="btn btn-primary" disabled><span class="glyphicon glyphicon-search"></span></button>
+            </div>
+        </div>
+    </div>
+</div>
+{{#each flashMessages.queue as |flash|}}
+  {{flash-message flash=flash}}
+{{/each}}
+
+
+    
+<table class="table">
+    <thead>
+        <tr>
+            <th>#</th>
+            <th>Ime</th>
+            <th>Prezime</th>
+            <th>Korisničko ime</th>
+            <th>Uloga</th>
+            <th>Akcije</th>
+        </tr>
+    </thead>
+    <tbody>        
+       {{log currentUser.email}}
+        {{#each model.users as |user i|}}
+            <tr>
+                <td>{{ add i 1 }}</td>
+                <td>{{#highlight-terms filterTerm}} {{ user.firstName }} {{/highlight-terms}}</td>
+                <td>{{#highlight-terms filterTerm}} {{ user.lastName }} {{/highlight-terms}}</td>
+                <td>{{#highlight-terms filterTerm}} {{ user.username }} {{/highlight-terms}}</td>
+                <td>{{ user.type }}</td>
+                <td>
+               
+                <!--    <a href="#" class="btn btn-default"><span class="glyphicon glyphicon-pencil"></span></a> -->
+                    {{#if (eq currentUser.role "ROLE_ADMIN")}}
+                        {{#if (not-eq currentUser.username user.username)}}
+                        <button {{action "delete" user}} class="btn btn-default"><span class="glyphicon glyphicon-remove-circle"></span></button>
+                        {{else}}
+                        <button class="btn btn-warning disabled"><span class="glyphicon glyphicon-user"></span></button>
+                        {{/if}}
+
+                    {{/if}}
+                </td>
+            </tr>
+        {{else}}
+        <h3> <kbd>Nema rezultata :(</kbd></h3>
+        {{/each}}
+    </tbody>
+</table>
+
+{{#if showNewUser}}
+    {{#modal-dialog onClose="toggleNewUser" targetAttachment="center" translucentOverlay=true}}
+        <h3><span class="glyphicon glyphicon-plus-sign"></span>  Dodaj novog korisnika</h3>
+            <br>
+        <form class="col-md-12">
+            <div class="form-group">
+                {{validated-input type="text" model=this placeholder="Ime" valuePath="model.user.firstName"}}
+            </div>
+            <div class="form-group">
+                {{validated-input type="text" model=this placeholder="Prezime" valuePath="model.user.lastName"}}
+            </div>
+            <div class="form-group">
+                {{validated-input type="text" model=this placeholder="Username" valuePath="model.user.username"}}
+            </div>
+            <div class="form-group">
+                {{validated-input type="password" model=this placeholder="Password" valuePath="model.user.password"}}
+            </div>
+            <div class="form-group">
+                <select class="form-control" onchange= {{action "selectRole" value="target.value"}}>
+                    <option value="0" selected= {{eq role 0}}>Profesor</option>
+                    <option value="1" selected= {{eq role 1}}>Operator</option>
+                </select>
+            </div>
+            <button type="submit" class="btn btn-primary" disabled={{v-get this 'isInvalid'}} {{action "add"}}>Dodaj</button>
+        </form>
+    {{/modal-dialog}}
+{{/if}}

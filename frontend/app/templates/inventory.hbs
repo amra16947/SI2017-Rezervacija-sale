@@ -1,0 +1,64 @@
+{{title "Oprema u " model.classroom.name}}
+
+<div class="row">
+    <div class="col-md-6">
+        <h1>Oprema u {{model.classroom.name}}</h1>
+    </div>
+    <div class="col-md-6 text-right title-buttons-right">
+	    {{#if (eq currentUser.role "ROLE_ADMIN")}}
+	        <button {{action "toggleNewEquipment"}} class="btn btn-primary"><span class="glyphicon glyphicon-plus-sign"></span> Dodaj novu opremu</button>
+        {{/if}}
+    </div>
+</div>
+
+
+{{#each flashMessages.queue as |flash|}}
+  {{flash-message flash=flash}}
+{{/each}}
+
+   
+<table class="table">
+    <thead>
+        <tr>
+            <th>#</th>
+            <th>Tip opreme</th>
+            <th>Količina</th>
+            <th>Akcije</th>
+        </tr>
+    </thead>
+    <tbody>
+        {{#each model.classroom.equipment as |equipment i|}}
+            <tr>
+                <td>{{ add i 1 }}</td>
+                <td>{{ equipment.equipmentType.name }}</td>
+                <td>{{ equipment.quantity }}</td>
+                <td>
+	                {{#if (eq currentUser.role "ROLE_ADMIN")}}
+	                    <button {{action "delete" equipment}} class="btn btn-default" title="Izbrisi svu opremu"><span class="glyphicon glyphicon-remove-circle"></span></button>
+                    {{/if}}
+                </td>
+            </tr>
+        {{/each}}
+    </tbody>
+</table>
+
+{{#if showNewEquipment}}
+    {{#modal-dialog onClose="toggleNewEquipment" targetAttachment="center" translucentOverlay=true}}
+        <h3><span class="glyphicon glyphicon-plus-sign"></span> Dodaj novu opremu</h3>
+            <br>
+        <form class="col-md-12">        
+            <div class="form-group">
+                <select class="form-control" onchange= {{action "selectType" value="target.value"}}>
+                	{{#each model.types as |type|}}
+                    	<option value="{{type.id}}" selected={{eq model.equipment.type type.id}}>{{type.name}}</option>
+                	{{/each}}
+                </select>
+            </div>
+            <div class="form-group">
+                {{input type="number" class="form-control" min=1 max=1000 value=model.equipment.quantity placeholder="Količina"}}
+            </div> 
+            <button type="submit" class="btn btn-primary" disabled={{v-get this 'isInvalid'}} {{action "add"}}>Dodaj</button>
+        </form>
+    {{/modal-dialog}}
+{{/if}}
+

@@ -1,0 +1,18 @@
+{{input type=type value=value placeholder=placeholder class='form-control' name=valuePath}}
+
+<div class='input-error'>
+
+{{log showErrorMessage}}
+
+{{#if showErrorMessage}}
+  <div class='error'>
+    {{v-get model valuePath 'message'}}
+  </div>
+{{/if}}
+
+{{#if showWarningMessage}}
+  <div class='warning'>
+    {{v-get model valuePath 'warningMessage'}}
+  </div>
+{{/if}}
+</div>

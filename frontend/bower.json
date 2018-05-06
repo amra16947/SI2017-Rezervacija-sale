@@ -1,0 +1,6 @@
+{
+  "name": "client",
+  "dependencies": {
+    "jquery-highlight": "~3.2.2"
+  }
+}

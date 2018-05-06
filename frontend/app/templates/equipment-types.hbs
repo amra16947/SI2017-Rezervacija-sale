@@ -1,0 +1,59 @@
+{{title "Tipovi opreme"}}
+
+<div class="row">
+    <div class="col-md-6">
+        <h1>Tipovi opreme</h1>
+    </div>
+    <div class="col-md-6 text-right title-buttons-right">
+	    {{#if (eq currentUser.role "ROLE_ADMIN")}}
+	        <button {{action "toggleNewType"}} class="btn btn-primary"><span class="glyphicon glyphicon-plus-sign"></span> Dodaj novu opremu</button>
+        {{/if}}
+    </div>
+</div>
+
+
+{{#each flashMessages.queue as |flash|}}
+  {{flash-message flash=flash}}
+{{/each}}
+   
+<table class="table">
+    <thead>
+        <tr>
+            <th>#</th>
+            <th>Naziv opreme</th>
+            <th>Sifra/labela opreme</th>
+            <th>Akcije</th>
+        </tr>
+    </thead>
+    <tbody>
+        {{#each model.types as |type i|}}
+            <tr>
+                <td>{{ add i 1 }}</td>
+                <td>{{ type.name }}</td>
+                <td>{{ type.label }}</td>
+                <td>
+	                {{#if (eq currentUser.role "ROLE_ADMIN")}}
+	                    <button {{action "delete" type}} class="btn btn-default" title="Izbrisi tip opreme"><span class="glyphicon glyphicon-remove-circle"></span></button>
+                    {{/if}}
+                </td>
+            </tr>
+        {{/each}}
+    </tbody>
+</table>
+
+{{#if showNewType}}
+    {{#modal-dialog onClose="toggleNewType" targetAttachment="center" translucentOverlay=true}}
+        <h3><span class="glyphicon glyphicon-plus-sign"></span> Dodaj novi tip opreme</h3>
+            <br>
+        <form class="col-md-12">
+        	<div class="form-group">
+                {{validated-input type="text" model=this placeholder="Naziv" valuePath="model.equipment.name"}}
+            </div>
+            <div class="form-group">
+                {{input type="number" class="form-control" min=1 max=1000 value=model.equipment.label placeholder="Sifra (broj)"}}
+            </div> 
+            <button type="submit" class="btn btn-primary" disabled={{v-get this 'isInvalid'}} {{action "add"}}>Dodaj</button>
+        </form>
+    {{/modal-dialog}}
+{{/if}}
+

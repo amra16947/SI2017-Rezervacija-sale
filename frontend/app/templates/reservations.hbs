@@ -1,0 +1,50 @@
+{{title "Rezervacije za salu" model.classroom.name }}
+
+<div class="row">
+    <div class="col-md-6">
+        <h1>Rezervacije za salu {{ model.classroom.name }} </h1>
+    </div>
+    <div class="col-md-6 text-right title-buttons-right">
+	    {{#if (eq currentUser.role "ROLE_OPERATOR")}}
+	    	<span>Kliknite na željeno polje/vrijeme da dodate rezervaciju.</span>
+        {{/if}}
+    </div>
+</div>
+
+
+            
+	        {{#each flashMessages.queue as |flash|}}
+			  {{flash-message flash=flash}}
+			{{/each}}
+
+{{full-calendar events=reservations viewName='agendaWeek' dayClick=(action 'dayClicked') eventClick=(action 'reservationClicked')}}
+
+{{#if (and showNewReservation (eq currentUser.role "ROLE_OPERATOR")) }}
+    {{#modal-dialog onClose="toggleNewReservation" targetAttachment="center" translucentOverlay=true}}
+        <h3><span class="glyphicon glyphicon-plus-sign"></span> Dodaj novu rezervaciju</h3>
+            <br>
+        <form class="col-md-12">
+            <div class="form-group">
+            	<p> Datum i vrijeme: <b>{{niceTime}}</b></p>
+            </div>
+            <div class="form-group">
+                {{input type="number" class="form-control" min=1 max=14 value=model.reservation.duration placeholder="Trajanje"}}
+            </div>
+            <div class="form-group">
+                <select class="form-control" onchange= {{action "selectUser" value="target.value"}}>
+                    <option value="">Izaberite ...</option>
+
+					{{#each model.users as |user|}}
+						{{#if (eq user.type "Teacher")}}
+							<option value="{{user.id}}" selected= {{eq model.reservation.teacherId user.id}} > {{ user.firstName }} {{ user.lastName }} </option>
+						{{/if}}
+					{{/each}}
+                </select>
+            </div>
+
+            <button type="submit" class="btn btn-primary" disabled={{v-get this 'isInvalid'}} {{action "add"}}>Dodaj</button>
+
+        </form>
+
+    {{/modal-dialog}}
+{{/if}}

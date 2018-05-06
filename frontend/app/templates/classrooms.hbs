@@ -1,0 +1,120 @@
+{{title "Sale"}}
+
+<div class="row">
+    <div class="col-md-6">
+        <h1>Sale</h1>
+    </div>
+    <div class="col-md-6 text-right title-buttons-right">
+	    {{#if (eq currentUser.role "ROLE_ADMIN")}}
+	        <button {{action "toggleNewClassroom"}} class="btn btn-primary"><span class="glyphicon glyphicon-plus-sign"></span> Dodaj novu salu</button>
+        {{/if}}
+    </div>
+</div>
+<!--
+<div class="row">
+    <div class="col-md-3 col-md-offset-9 text-right">
+        <div class="input-group">
+            {{input value=filterTerm class="form-control" placeholder="Trazite ..."}}
+            <div class="input-group-btn">
+                <button class="btn btn-primary" disabled><span class="glyphicon glyphicon-search"></span></button>
+            </div>
+        </div>
+    </div>
+</div>
+-->
+
+{{#each flashMessages.queue as |flash|}}
+  {{flash-message flash=flash}}
+{{/each}}
+
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>#</th>
+            <th>Naziv</th>
+            <th>Odgovorna osoba</th>
+            <th>Broj sjedišta</th>
+            <th>Broj ključeva</th>
+            <th>Broj uzetih ključeva</th>
+            <th>Tip i status sale</th>
+            <th>Akcije</th>
+        </tr>
+    </thead>
+    <tbody>
+        {{#each model.classrooms as |classroom i|}}
+            <tr>
+                <td>{{ add i 1 }}</td>
+                <td>{{#highlight-terms filterTerm}} {{ classroom.name }} {{/highlight-terms}}</td>
+                <td>{{#highlight-terms filterTerm}} {{ classroom.teacherInCharge.firstName }} {{ classroom.teacherInCharge.lastName }} {{/highlight-terms}}</td>
+                <td>{{ classroom.seatCount }}</td>
+                <td>{{ classroom.keyCount }}</td>
+                <td>{{ classroom.takenKeyCount }}</td>
+                <td>{{ classroom.type }} / {{ classroom.status }}</td>
+                <td>
+                <!--    <a href="#" class="btn btn-default"><span class="glyphicon glyphicon-pencil"></span></a> -->
+
+                    {{#if (eq currentUser.role "ROLE_OPERATOR")}}
+                        {{#link-to "reservations" classroom.id class="btn btn-default" title="Rezervacije"}}<span class="glyphicon glyphicon-calendar"></span>{{/link-to}}
+                    {{/if}}
+                    {{#link-to "inventory" classroom.id class="btn btn-default" title="Oprema"}}<span class="glyphicon glyphicon-list"></span>{{/link-to}}
+                    {{#link-to "access-grants" classroom.id class="btn btn-default" title="Pristup"}}<span class="glyphicon glyphicon-lock"></span>{{/link-to}}
+	                {{#if (eq currentUser.role "ROLE_ADMIN")}}
+	                    <button {{action "delete" classroom}} class="btn btn-default" title="Izbrisi salu"><span class="glyphicon glyphicon-remove-circle"></span></button>
+                    {{/if}}
+                </td>
+            </tr>
+        {{/each}}
+    </tbody>
+</table>
+
+{{#if showNewClassroom}}
+    {{#modal-dialog onClose="toggleNewClassroom" targetAttachment="center" translucentOverlay=true}}
+        <h3><span class="glyphicon glyphicon-plus-sign"></span> Dodaj novu salu</h3>
+            <br>
+        <form class="col-md-12">
+            <label>Naziv sale</label>
+            <div class="form-group">
+                {{validated-input type="text" model=this placeholder="Naziv" valuePath="model.classroom.name"}}
+            </div>
+              <label>Broj sjedišta</label>
+            <div class="form-group">
+                {{input type="number" class="form-control" min=1 max=9999 value=model.classroom.seatCount placeholder="Broj sjedišta"}}
+            </div>
+              <label>Broj ključeva</label>
+            <div class="form-group">
+                {{input type="number" class="form-control" min=1 max=9999 value=model.classroom.keyCount placeholder="Broj ključeva"}}
+            </div>
+            <label>Tip sale</label>
+            <div class="form-group">
+                <select class="form-control" onchange= {{action "selectType" value="target.value"}}>
+                    <option value="0" selected= {{eq model.classroom.type 0}}>Obična</option>
+                    <option value="1" selected= {{eq model.classroom.type 1}}>Amfiteatar</option>
+                    <option value="2" selected= {{eq model.classroom.type 2}}>Laboratorija</option>
+                    <option value="3" selected= {{eq model.classroom.type 3}}>Kancelarija</option>
+                </select>
+            </div>
+            <!--
+            <label>Odgovorni nastavnik</label>
+            <div class="form-group">
+                <select class="form-control" onchange= {{action "selectStatus" value="target.value"}}>
+                    <option value="-1" selected= {{eq model.classroom.teacherId -1}}>Nema odgovorne osobe</option>
+
+					{{#each model.users as |user|}}
+						{{#if (eq user.type "Teacher")}}
+							<option value="user.id" selected= {{eq model.classroom.teacherId user.id}}> {{ user.firstName }} {{ user.lastName }} </option>
+						{{/if}}
+					{{/each}}
+                </select>
+            </div>
+            -->
+            <label>Status sale</label>
+            <div class="form-group">
+                <select class="form-control" onchange= {{action "selectTeacher" value="target.value"}}>
+                    <option value="0" selected= {{eq role 0}}>U upotrebi</option>
+                </select>
+            </div>
+            <button type="submit" class="btn btn-primary" disabled={{v-get this 'isInvalid'}} {{action "add"}}>Dodaj</button>
+        </form>
+    {{/modal-dialog}}
+{{/if}}

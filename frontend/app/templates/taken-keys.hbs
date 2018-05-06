@@ -1,0 +1,36 @@
+{{title "Ključevi" }}
+
+<div class="row">
+    <div class="col-md-6">
+        <h1>Ključevi</h1>
+    </div>
+</div>
+
+            
+{{#each flashMessages.queue as |flash|}}
+  {{flash-message flash=flash}}
+{{/each}}
+
+{{full-calendar events=reservations viewName='agendaDay' eventClick=(action 'reservationClicked') }}
+
+{{#if (and showKeyActions (not-eq selectedReservation null)) }}
+    {{#modal-dialog onClose="toggleKeyActions" targetAttachment="center" translucentOverlay=true}}
+        <h3><span class="glyphicon glyphicon-lock"></span> Ključevi za salu {{ selectedReservation.classroom.name }}</h3>
+            <br>
+            <br>
+            <form class="col-md-12">
+
+            {{#if (lt selectedReservation.classroom.takenKeyCount selectedReservation.classroom.keyCount)}}
+            <button class="btn btn-primary" {{action "takeKey"}}><span class="glyphicon glyphicon-minus-sign"></span> Daj ključ</button>
+            {{/if}}
+
+            {{#if (gt selectedReservation.classroom.takenKeyCount 0) }}
+                <button class="btn btn-default" {{action "returnKey"}}><span class="glyphicon glyphicon-plus-sign"></span> Vrati ključ</button>
+            {{/if}}
+
+
+        </form>
+    {{/modal-dialog}}
+{{/if}}
+
+

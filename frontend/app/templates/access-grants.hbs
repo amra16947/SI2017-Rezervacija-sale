@@ -1,0 +1,64 @@
+{{title "Pristup za salu " model.classroom.name}}
+
+<div class="row">
+    <div class="col-md-6">
+        <h1>Pristup za salu {{model.classroom.name}}</h1>
+    </div>
+    <div class="col-md-6 text-right title-buttons-right">
+	    {{#if (eq currentUser.role "ROLE_OPERATOR")}}
+	        <button {{action "toggleNewAccess"}} class="btn btn-primary"><span class="glyphicon glyphicon-plus-sign"></span> Dodaj novi pristup</button>
+        {{/if}}
+    </div>
+</div>
+
+
+{{#each flashMessages.queue as |flash|}}
+  {{flash-message flash=flash}}
+{{/each}}
+
+   
+<table class="table">
+    <thead>
+        <tr>
+            <th>#</th>
+            <th>Ime i prezime</th>
+            <th>Username</th>
+            <th>Akcije</th>
+        </tr>
+    </thead>
+    <tbody>
+        {{#each model.classroom.accessGrants as |access i|}}
+            <tr>
+                <td>{{ add i 1 }}</td>
+                <td>{{ access.teacher.firstName }} {{ access.teacher.lastName }}</td>
+                <td>{{ access.teacher.username }}</td>
+                <td>
+	                {{#if (eq currentUser.role "ROLE_OPERATOR")}}
+	                    <button {{action "delete" access}} class="btn btn-default" title="Izbrisi pristup"><span class="glyphicon glyphicon-remove-circle"></span></button>
+                    {{/if}}
+                </td>
+            </tr>
+        {{/each}}
+    </tbody>
+</table>
+
+{{#if showNewAccess}}
+    {{#modal-dialog onClose="toggleNewAccess" targetAttachment="center" translucentOverlay=true}}
+        <h3><span class="glyphicon glyphicon-plus-sign"></span> Dodaj novi pristup</h3>
+            <br>
+        <form class="col-md-12">        
+            <div class="form-group">
+                <select class="form-control" onchange= {{action "selectUser" value="target.value"}}>
+            		<option value="" >Molimo izaberite ...</option>
+                	{{#each model.users as |user|}}
+                		{{#if (eq user.type "Teacher")}}
+                    		<option value="{{user.id}}" selected={{eq model.access.userId user.id}}>{{user.firstName}} {{user.lastName}} </option>
+                		{{/if}}
+                	{{/each}}
+                </select>
+            </div>
+            <button type="submit" class="btn btn-primary" disabled={{v-get this 'isInvalid'}} {{action "add"}}>Dodaj</button>
+        </form>
+    {{/modal-dialog}}
+{{/if}}
+

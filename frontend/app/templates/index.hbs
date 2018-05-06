@@ -1,0 +1,37 @@
+{{title "Pocetna"}}
+
+<div class="row">
+    <div class="col-md-4">
+        <div class="panel panel-primary panel-dashboard">
+            <div class="panel-heading">
+                <h3 class="panel-title">Broj korisnika</h3>
+            </div>
+            <div class="panel-body">
+                <span class="glyphicon glyphicon-user"></span><br>
+                {{ model.stats.userCount }}
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="panel panel-primary panel-dashboard">
+            <div class="panel-heading">
+                <h3 class="panel-title">Broj sala</h3>
+            </div>
+            <div class="panel-body">
+                <span class="glyphicon glyphicon-calendar"></span><br>
+                {{ model.stats.classroomCount }}
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="panel panel-primary panel-dashboard">
+            <div class="panel-heading">
+                <h3 class="panel-title">Broj predmeta u inventaru</h3>
+            </div>
+            <div class="panel-body">
+                <span class="glyphicon glyphicon-list"></span><br>
+                {{ model.stats.equipmentCount }}
+            </div>
+        </div>
+    </div>
+</div>

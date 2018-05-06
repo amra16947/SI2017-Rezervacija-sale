@@ -1,0 +1,39 @@
+@import "ember-modal-dialog/ember-modal-structure";
+@import "ember-modal-dialog/ember-modal-appearance";
+@import "ember-bootstrap/bootstrap";
+
+body {
+    padding-top: 10px;
+}
+
+.login .logo {
+    margin: 0 auto;
+    width: 76px;
+    height: 76px;
+    display: block;
+}
+
+.panel-login {
+    margin-top: 25%;
+}
+
+.title-buttons-right {
+    line-height: 69px;
+}
+
+.panel-dashboard .panel-body {
+	font-size: 40px;
+	text-align: center;
+}
+
+.panel-dashboard .panel-body .glyphicon {
+	font-size: 60px;
+}
+
+#currentTime {
+	font-style: italic;
+	font-size: 15px;
+	font-weight: 300;
+	line-height: 55px;
+	text-align: center;
+}
